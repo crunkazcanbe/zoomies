@@ -1,0 +1,10 @@
+{
+  "required": false,
+  "minVersion": "0.8",
+  "package": "com.dogpound.zoomies.mixin",
+  "compatibilityLevel": "JAVA_8",
+  "plugin": "com.dogpound.zoomies.ZoomiesPlugin",
+  "mixins": [
+    "MixinOreIngredient"
+  ]
+}

@@ -1,0 +1,78 @@
+#!/usr/bin/env python3
+"""mcprofile — profile a whole DogPound launch, stage by stage.
+
+Run it right after starting the game. Every ~0.4s it notes which Forge loading stage is running
+(from debug.log) and snapshots the Client + Server threads with jcmd. When the game exits it writes
+a report: for each stage, how long it ran and the code that was hottest in it.
+
+  mcprofile [report.txt]
+"""
+import collections, os, re, subprocess, sys, time
+
+G = os.environ.get("MC_DIR", os.path.expanduser("~/.minecraft"))
+DEBUG = G + "/logs/debug.log"
+JCMD = os.environ.get("JCMD", "jcmd")
+OUT = sys.argv[1] if len(sys.argv) > 1 else "zoomies-profile-%s.txt" % time.strftime("%Y%m%d-%H%M")
+SKIP = ("java.", "jdk.", "sun.", "com.google.common.eventbus", "net.minecraftforge.fml.common.eventhandler",
+        "net.minecraftforge.fml.common.LoadController", "org.prismlauncher", "top.outlands")
+STAGE = re.compile(r"Bar (?:Step|Finished): (.+?) - (.+?) took")
+
+
+def pid():
+    out = subprocess.run(["pgrep", "-f", r"^[^ ]*java[^ ]* .*(minecraft|PrismLauncher|MultiMC)"], capture_output=True, text=True).stdout.split()
+    return out[0] if out else None
+
+
+def stage(f):
+    """last 'Bar Step' stage mentioned in the log (reads only the new tail)"""
+    try:
+        f.seek(max(0, os.path.getsize(DEBUG) - 20000))
+        hits = STAGE.findall(f.read())
+        return "%s | %s" % hits[-1] if hits else "starting"
+    except Exception:
+        return "?"
+
+
+def frames(dump, thread):
+    m = re.search(r'^"%s".*?\n\n' % re.escape(thread), dump, re.S | re.M)
+    return re.findall(r"^\s+at ([\w$./<>]+)\(", m.group(0), re.M) if m else []
+
+
+def main():
+    p = None
+    for _ in range(120):
+        p = pid()
+        if p: break
+        time.sleep(1)
+    if not p: sys.exit("Minecraft didn't start")
+    samples = collections.defaultdict(collections.Counter)   # stage -> frame -> count
+    tops = collections.defaultdict(collections.Counter)
+    counts = collections.Counter()
+    f = open(DEBUG, errors="replace") if os.path.exists(DEBUG) else None
+    t0 = time.time()
+    while os.path.exists("/proc/" + p):
+        dump = subprocess.run([JCMD, p, "Thread.print"], capture_output=True, text=True).stdout
+        if f is None and os.path.exists(DEBUG): f = open(DEBUG, errors="replace")
+        st = stage(f) if f else "starting"
+        for th in ("Client thread", "Server thread"):
+            fr = frames(dump, th)
+            if not fr: continue
+            key = th.split()[0] + " | " + st
+            counts[key] += 1
+            tops[key][fr[0]] += 1
+            mod = next((x for x in fr if not x.startswith(SKIP)), None)
+            if mod: samples[key][mod] += 1
+        time.sleep(0.4)
+    with open(OUT, "w") as o:
+        o.write("mcprofile: %d s of launch, %d snapshots\n\n" % (time.time() - t0, sum(counts.values())))
+        for key, n in counts.most_common(25):
+            o.write("=== %s  (%d snapshots, ~%ds)\n" % (key, n, n * 0.45))
+            for fr, c in samples[key].most_common(6):
+                o.write("   %5.1f%%  %s\n" % (100 * c / n, fr))
+            for fr, c in tops[key].most_common(2):
+                o.write("      top %5.1f%%  %s\n" % (100 * c / n, fr))
+    print("report:", OUT)
+
+
+if __name__ == "__main__":
+    main()

@@ -1,0 +1,12 @@
+build/
+.gradle/
+run/
+out/
+*.log
+# her machine's profiling logs and timings stay private
+baselines/
+# other mods' jars used only to compile against (not ours to redistribute) - see libs/README.md
+libs/*.jar
+
+# local tool history (private)
+.recall/

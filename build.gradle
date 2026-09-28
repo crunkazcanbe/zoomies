@@ -1,0 +1,42 @@
+buildscript {
+    repositories {
+        maven { url = 'https://maven.minecraftforge.net/' }
+        mavenCentral()
+    }
+    dependencies {
+        classpath 'net.minecraftforge.gradle:ForgeGradle:3.+'
+    }
+}
+apply plugin: 'net.minecraftforge.gradle'
+
+version = '0.1.0'
+group = 'com.dogpound.zoomies'
+archivesBaseName = 'Zoomies-1.12.2'
+sourceCompatibility = targetCompatibility = compileJava.sourceCompatibility = compileJava.targetCompatibility = '1.8'
+
+minecraft {
+    mappings channel: 'snapshot', version: '20171003-1.12'
+}
+
+repositories { mavenCentral() }
+
+dependencies {
+    minecraft 'net.minecraftforge:forge:1.12.2-14.23.5.2860'
+    compileOnly files('libs/mixinbooter-api.jar')
+    compileOnly files('libs/sponge-mixin.jar')
+    compileOnly files('libs/endercore.jar')
+    compileOnly files('libs/enderio.jar')
+}
+
+jar {
+    exclude 'zone/**' // compile-only stand-in for MixinBooter's ILateMixinLoader; the real one ships with the loader
+    manifest {
+        attributes([
+            'FMLCorePlugin'               : 'com.dogpound.zoomies.Zoomies',
+            'FMLCorePluginContainsFMLMod' : 'true',
+            'ForceLoadAsMod'              : 'false',
+            'MixinConfigs'                : 'zoomies.mixins.json'
+        ])
+    }
+}
+jar.finalizedBy('reobfJar')
