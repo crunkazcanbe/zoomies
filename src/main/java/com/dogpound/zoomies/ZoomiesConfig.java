@@ -109,6 +109,9 @@ public final class ZoomiesConfig {
         section("extrautils2");
         opt("extrautils2.oreRegisterIndex", "true", "Extra Utilities 2 crusher recipes: when an ore name is registered, check only that "
             + "metal's dust/ore/ingot instead of re-scanning every ore name in the game. Measured: 40 s of the big pack's load.");
+        section("caches");
+        opt("caches.invalidateOnModChange", "true", "Delete saved startup caches (ProjectE EMC values, RealmCoin prices) when the mod "
+            + "list changes, so mods that reuse them never read stale data.");
         section("tails");
         opt("tails.zipIndex", "true", "Tails Legacy: find its part files through a per-jar folder index instead of walking every file of "
             + "every mod jar on each resource reload. Measured: 23 s of the big pack's load.");

@@ -23,6 +23,7 @@ public class ZoomiesMod {
     /** model swaps must be listening before the first model bake (between preInit and init) */
     @Mod.EventHandler
     public void pre(net.minecraftforge.fml.common.event.FMLPreInitializationEvent e) {
+        WarmCaches.checkModList();   // before any mod reads a saved cache (ProjectE EMC is read at server start)
         if (FMLCommonHandler.instance().getSide().isClient()) MinecraftForge.EVENT_BUS.register(BetterGrass.class);
     }
 
