@@ -11,7 +11,8 @@
     "MixinAnimaniaAdvancementsOnce",
     "MixinMtsPackResourceCache",
     "MixinFvtmZipIndex",
-    "MixinAbyssalPatrons"
+    "MixinAbyssalPatrons",
+    "MixinThaumcraftRecipeIndex"
   ],
   "client": [
     "MixinNpcsDeferTextureScan",

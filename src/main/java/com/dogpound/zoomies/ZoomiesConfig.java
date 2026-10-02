@@ -56,6 +56,7 @@ public final class ZoomiesConfig {
 
         opt("textures.customSky", "true", "OptiFine Custom Sky: resource packs with optifine/sky/world0/sky1.properties draw star/nebula sky layers.");
         opt("textures.betterGrass", "false", "OptiFine Better Grass (Fast): grass, snowy grass and mycelium are grass-coloured on every side.");
+        opt("thaumcraft.recipeIndex", "true", "Thaumcraft looks up each item's crafting recipes through an index instead of scanning every recipe in the game (was 11% of startup). Restart to change.");
         opt("textures.resourceMissCache", "true", "Remember resources Immersive Vehicles already looked for and didn't find, instead of searching all mod jars again. Restart to change.");
         opt("machines.screenSizeCull", "true", "Don't draw animated machines/blocks (TESRs) smaller than entities.minPixels on screen. Never within 16 blocks or for beams.");
         opt("textures.randomMobs", "true", "OptiFine Random Entities: texture packs with optifine/random/entity/ (or mcpatcher/mob/) give mobs several looks.");
@@ -251,6 +252,7 @@ public final class ZoomiesConfig {
             case "MixinNpcsDeferTextureScan": return on("customnpcs.deferTextureScan");
             case "MixinBwmListContains": return on("betterwithmods.oreIndex");
             case "MixinMtsPackResourceCache": return on("textures.resourceMissCache");
+            case "MixinThaumcraftRecipeIndex": return on("thaumcraft.recipeIndex");
             case "MixinFvtmZipIndex": return on("fvtm.zipIndex");
             case "MixinGvcObjLines": return on("models.fastObjLines");
             case "MixinNoopTransforms": case "MixinDiscoveryGl": case "MixinDiscoveryState": case "MixinDiscoveryBuffer": return true; // live switches / idle counters
