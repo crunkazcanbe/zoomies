@@ -12,6 +12,7 @@
   ],
   "client": [
     "MixinFastStitcher",
+    "MixinStitcherTileCap",
     "MixinTailsZipListing",
     "MixinSmoothSyncLoading",
     "MixinTesrProfile",

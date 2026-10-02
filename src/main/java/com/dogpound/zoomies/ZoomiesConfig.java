@@ -115,6 +115,9 @@ public final class ZoomiesConfig {
         section("reloads");
         opt("reloads.packOnly", "true", "When Immersive Vehicles or UnlimitedChiselWorks add their resource pack during start-up, add just that pack "
             + "instead of forcing a full resource reload (the game reloads everything at the end anyway). Measured: 20 s.");
+        section("texturecap");
+        opt("textures.maxTileSize", "128", "Largest size (pixels) any single texture may take in the main texture sheet; bigger ones are "
+            + "scaled down to fit. Stops 'Unable to fit' crashes when giant vehicle textures overflow the sheet. 0 = no limit.");
         section("treasure2");
         opt("treasure2.skipFixer", "true", "Treasure2: don't run its already-current (1.12) structure templates through the data fixer on every world load. "
             + "Measured: most of a new world's 13-minute setup in the big pack.");
@@ -261,6 +264,7 @@ public final class ZoomiesConfig {
             case "MixinXu2OreRegister": return on("extrautils2.oreRegisterIndex");
             case "MixinTailsZipListing": return on("tails.zipIndex");
             case "MixinTreasureTemplateNoFixer": return on("treasure2.skipFixer");
+            case "MixinStitcherTileCap": return true;   // textures.maxTileSize read live (0 = off)
             case "MixinRailcraftWorldGenCache": return on("railcraft.worldGenCache");
             case "MixinMtsSkipReload": case "MixinUcwSkipReload": return on("reloads.packOnly");
             case "MixinEnderIOLookupNode": return on("enderio.lookupSets");
