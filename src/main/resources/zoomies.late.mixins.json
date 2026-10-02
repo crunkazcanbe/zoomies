@@ -17,6 +17,8 @@
   ],
   "client": [
     "MixinNpcsDeferTextureScan",
+    "MixinMtsSkipReload",
+    "MixinUcwSkipReload",
     "MixinGvcObjLines"
   ]
 }

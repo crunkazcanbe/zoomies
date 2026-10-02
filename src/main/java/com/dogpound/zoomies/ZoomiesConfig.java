@@ -112,6 +112,9 @@ public final class ZoomiesConfig {
         section("caches");
         opt("caches.invalidateOnModChange", "true", "Delete saved startup caches (ProjectE EMC values, RealmCoin prices) when the mod "
             + "list changes, so mods that reuse them never read stale data.");
+        section("reloads");
+        opt("reloads.packOnly", "true", "When Immersive Vehicles or UnlimitedChiselWorks add their resource pack during start-up, add just that pack "
+            + "instead of forcing a full resource reload (the game reloads everything at the end anyway). Measured: 20 s.");
         section("tails");
         opt("tails.zipIndex", "true", "Tails Legacy: find its part files through a per-jar folder index instead of walking every file of "
             + "every mod jar on each resource reload. Measured: 23 s of the big pack's load.");
@@ -251,6 +254,7 @@ public final class ZoomiesConfig {
             case "MixinEnderIOAlloyDedupe": return on("enderio.alloyDedupe");
             case "MixinXu2OreRegister": return on("extrautils2.oreRegisterIndex");
             case "MixinTailsZipListing": return on("tails.zipIndex");
+            case "MixinMtsSkipReload": case "MixinUcwSkipReload": return on("reloads.packOnly");
             case "MixinEnderIOLookupNode": return on("enderio.lookupSets");
             case "MixinSmoothSyncLoading": return on("loadingScreen.noFrameLimit");
             case "MixinFastStitcher": return on("textures.fastStitch");
