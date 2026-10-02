@@ -106,6 +106,12 @@ public final class ZoomiesConfig {
         opt("oreIndex.enabled", "true", "Ore-dictionary ingredients answer 'does this item fit?' from an index instead of "
             + "walking every item under that ore name. Helps Tinkers, Ender IO and any mod that checks recipes a lot.");
 
+        section("extrautils2");
+        opt("extrautils2.oreRegisterIndex", "true", "Extra Utilities 2 crusher recipes: when an ore name is registered, check only that "
+            + "metal's dust/ore/ingot instead of re-scanning every ore name in the game. Measured: 40 s of the big pack's load.");
+        section("tails");
+        opt("tails.zipIndex", "true", "Tails Legacy: find its part files through a per-jar folder index instead of walking every file of "
+            + "every mod jar on each resource reload. Measured: 23 s of the big pack's load.");
         section("enderio");
         opt("enderio.alloyDedupe", "true", "Ender IO alloy recipes: find already-made combinations by bucket instead of "
             + "scanning them all. Measured: 173 s -> 51 s of loading.");
@@ -240,6 +246,8 @@ public final class ZoomiesConfig {
         switch (mixin) {
             case "MixinOreIngredient": return on("oreIndex.enabled");
             case "MixinEnderIOAlloyDedupe": return on("enderio.alloyDedupe");
+            case "MixinXu2OreRegister": return on("extrautils2.oreRegisterIndex");
+            case "MixinTailsZipListing": return on("tails.zipIndex");
             case "MixinEnderIOLookupNode": return on("enderio.lookupSets");
             case "MixinSmoothSyncLoading": return on("loadingScreen.noFrameLimit");
             case "MixinFastStitcher": return on("textures.fastStitch");

@@ -32,6 +32,7 @@ dependencies {
     compileOnly files('libs/celeritas.jar')
     compileOnly files('libs/animania.jar')
     compileOnly files('libs/mts.jar')
+    compileOnly files('libs/xu2.jar')
     compileOnly files('libs/thaumcraft.jar')
     compileOnly files('libs/fvtm.jar')
     compileOnly files('libs/fcl.jar')

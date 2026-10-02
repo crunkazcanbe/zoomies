@@ -6,6 +6,7 @@
   "plugin": "com.dogpound.zoomies.ZoomiesPlugin",
   "mixins": [
     "MixinEnderIOAlloyDedupe",
+    "MixinXu2OreRegister",
     "MixinEnderIOLookupNode",
     "MixinBwmListContains",
     "MixinAnimaniaAdvancementsOnce",
