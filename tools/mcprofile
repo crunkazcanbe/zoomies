@@ -23,11 +23,12 @@ def pid():
     return out[0] if out else None
 
 
-def stage(f):
-    """last 'Bar Step' stage mentioned in the log (reads only the new tail)"""
+def stage(_f=None):
+    """last 'Bar Step' stage in the CURRENT log (reopened each time: Minecraft rotates debug.log at startup)"""
     try:
-        f.seek(max(0, os.path.getsize(DEBUG) - 20000))
-        hits = STAGE.findall(f.read())
+        with open(DEBUG, errors="replace") as f:
+            f.seek(max(0, os.path.getsize(DEBUG) - 20000))
+            hits = STAGE.findall(f.read())
         return "%s | %s" % hits[-1] if hits else "starting"
     except Exception:
         return "?"
@@ -48,12 +49,10 @@ def main():
     samples = collections.defaultdict(collections.Counter)   # stage -> frame -> count
     tops = collections.defaultdict(collections.Counter)
     counts = collections.Counter()
-    f = open(DEBUG, errors="replace") if os.path.exists(DEBUG) else None
     t0 = time.time()
     while os.path.exists("/proc/" + p):
         dump = subprocess.run([JCMD, p, "Thread.print"], capture_output=True, text=True).stdout
-        if f is None and os.path.exists(DEBUG): f = open(DEBUG, errors="replace")
-        st = stage(f) if f else "starting"
+        st = stage() if os.path.exists(DEBUG) else "starting"
         for th in ("Client thread", "Server thread"):
             fr = frames(dump, th)
             if not fr: continue

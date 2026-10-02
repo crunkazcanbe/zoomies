@@ -64,6 +64,7 @@ public abstract class MixinMtsPackResourceCache {
                 long[] buf = new long[1 << 20];
                 int n = 0, jars = 0;
                 for (URL u : urls) {
+                    if ("asmgen".equals(u.getProtocol())) continue;               // FML in-memory event handlers: classes only, no assets
                     if (!"file".equals(u.getProtocol())) throw new IllegalStateException("non-file source " + u);
                     File f = new File(u.toURI());
                     if (f.isDirectory()) throw new IllegalStateException("directory on classpath " + f);
