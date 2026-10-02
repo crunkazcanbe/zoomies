@@ -30,6 +30,8 @@ dependencies {
     compileOnly files('libs/cnpc.jar')
     compileOnly files('libs/bwm.jar')
     compileOnly files('libs/celeritas.jar')
+    compileOnly files('libs/creativecore.jar')
+    compileOnly files('libs/celeritasdynlights.jar')
     compileOnly files('libs/animania.jar')
     compileOnly files('libs/mts.jar')
     compileOnly files('libs/xu2.jar')

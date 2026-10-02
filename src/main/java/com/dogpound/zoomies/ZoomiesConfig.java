@@ -113,7 +113,7 @@ public final class ZoomiesConfig {
         opt("caches.invalidateOnModChange", "true", "Delete saved startup caches (ProjectE EMC values, RealmCoin prices) when the mod "
             + "list changes, so mods that reuse them never read stale data.");
         section("reloads");
-        opt("reloads.packOnly", "true", "When Immersive Vehicles or UnlimitedChiselWorks add their resource pack during start-up, add just that pack "
+        opt("reloads.packOnly", "false", "When Immersive Vehicles or UnlimitedChiselWorks add their resource pack during start-up, add just that pack "
             + "instead of forcing a full resource reload (the game reloads everything at the end anyway). Measured: 20 s.");
         section("texturecap");
         opt("textures.maxTileSize", "128", "Largest size (pixels) any single texture may take in the main texture sheet; bigger ones are "
@@ -124,6 +124,11 @@ public final class ZoomiesConfig {
         section("railcraft");
         opt("railcraft.worldGenCache", "true", "Railcraft ore generation: remember the per-ore 'is generation enabled' answer instead of "
             + "running a regex for every block it checks.");
+        section("droppeditems");
+        opt("droppedItems.itemPhysicListCache", "true", "ItemPhysic: remember per item type whether a dropped item is on its burn/swim/fuel lists "
+            + "instead of walking the lists (and every mod's fuel handler) for every item every tick. Measured: ~30% of the render thread.");
+        opt("droppedItems.dynLightThrottle", "true", "Celeritas Dynamic Lights: work out a dropped item's glow every 4th tick instead of every tick "
+            + "(0.2 s, not visible). Measured: ~15% of the render thread.");
         section("tails");
         opt("tails.zipIndex", "true", "Tails Legacy: find its part files through a per-jar folder index instead of walking every file of "
             + "every mod jar on each resource reload. Measured: 23 s of the big pack's load.");
@@ -266,6 +271,8 @@ public final class ZoomiesConfig {
             case "MixinTreasureTemplateNoFixer": return on("treasure2.skipFixer");
             case "MixinStitcherTileCap": return true;   // textures.maxTileSize read live (0 = off)
             case "MixinRailcraftWorldGenCache": return on("railcraft.worldGenCache");
+            case "MixinItemPhysicListCache": return on("droppedItems.itemPhysicListCache");
+            case "MixinDynLightsItemThrottle": return on("droppedItems.dynLightThrottle");
             case "MixinMtsSkipReload": case "MixinUcwSkipReload": return on("reloads.packOnly");
             case "MixinEnderIOLookupNode": return on("enderio.lookupSets");
             case "MixinSmoothSyncLoading": return on("loadingScreen.noFrameLimit");

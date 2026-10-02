@@ -15,12 +15,14 @@
     "MixinMtsPackResourceCache",
     "MixinFvtmZipIndex",
     "MixinAbyssalPatrons",
-    "MixinThaumcraftRecipeIndex"
+    "MixinThaumcraftRecipeIndex",
+    "MixinItemPhysicListCache"
   ],
   "client": [
     "MixinNpcsDeferTextureScan",
     "MixinMtsSkipReload",
     "MixinUcwSkipReload",
-    "MixinGvcObjLines"
+    "MixinGvcObjLines",
+    "MixinDynLightsItemThrottle"
   ]
 }
