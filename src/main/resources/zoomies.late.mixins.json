@@ -16,7 +16,8 @@
     "MixinFvtmZipIndex",
     "MixinAbyssalPatrons",
     "MixinThaumcraftRecipeIndex",
-    "MixinItemPhysicListCache"
+    "MixinItemPhysicListCache",
+    "MixinBetterWeatherRainHeight"
   ],
   "client": [
     "MixinNpcsDeferTextureScan",

@@ -129,6 +129,9 @@ public final class ZoomiesConfig {
             + "instead of walking the lists (and every mod's fuel handler) for every item every tick. Measured: ~30% of the render thread.");
         opt("droppedItems.dynLightThrottle", "true", "Celeritas Dynamic Lights: work out a dropped item's glow every 4th tick instead of every tick "
             + "(0.2 s, not visible). Measured: ~15% of the render thread.");
+        section("weather");
+        opt("weather.rainHeightMemo", "true", "Better Weather: remember each block column's rain height for 0.5 s instead of scanning the column "
+            + "for every entity, rain sound and rain drop every tick. Measured: ~7% of the render thread.");
         section("tails");
         opt("tails.zipIndex", "true", "Tails Legacy: find its part files through a per-jar folder index instead of walking every file of "
             + "every mod jar on each resource reload. Measured: 23 s of the big pack's load.");
@@ -273,6 +276,7 @@ public final class ZoomiesConfig {
             case "MixinRailcraftWorldGenCache": return on("railcraft.worldGenCache");
             case "MixinItemPhysicListCache": return on("droppedItems.itemPhysicListCache");
             case "MixinDynLightsItemThrottle": return on("droppedItems.dynLightThrottle");
+            case "MixinBetterWeatherRainHeight": return on("weather.rainHeightMemo");
             case "MixinMtsSkipReload": case "MixinUcwSkipReload": return on("reloads.packOnly");
             case "MixinEnderIOLookupNode": return on("enderio.lookupSets");
             case "MixinSmoothSyncLoading": return on("loadingScreen.noFrameLimit");
