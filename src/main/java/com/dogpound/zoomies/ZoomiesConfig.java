@@ -115,6 +115,9 @@ public final class ZoomiesConfig {
         section("reloads");
         opt("reloads.packOnly", "true", "When Immersive Vehicles or UnlimitedChiselWorks add their resource pack during start-up, add just that pack "
             + "instead of forcing a full resource reload (the game reloads everything at the end anyway). Measured: 20 s.");
+        section("treasure2");
+        opt("treasure2.skipFixer", "true", "Treasure2: don't run its already-current (1.12) structure templates through the data fixer on every world load. "
+            + "Measured: most of a new world's 13-minute setup in the big pack.");
         section("tails");
         opt("tails.zipIndex", "true", "Tails Legacy: find its part files through a per-jar folder index instead of walking every file of "
             + "every mod jar on each resource reload. Measured: 23 s of the big pack's load.");
@@ -254,6 +257,7 @@ public final class ZoomiesConfig {
             case "MixinEnderIOAlloyDedupe": return on("enderio.alloyDedupe");
             case "MixinXu2OreRegister": return on("extrautils2.oreRegisterIndex");
             case "MixinTailsZipListing": return on("tails.zipIndex");
+            case "MixinTreasureTemplateNoFixer": return on("treasure2.skipFixer");
             case "MixinMtsSkipReload": case "MixinUcwSkipReload": return on("reloads.packOnly");
             case "MixinEnderIOLookupNode": return on("enderio.lookupSets");
             case "MixinSmoothSyncLoading": return on("loadingScreen.noFrameLimit");
