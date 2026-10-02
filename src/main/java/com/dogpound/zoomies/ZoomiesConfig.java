@@ -121,6 +121,9 @@ public final class ZoomiesConfig {
         section("treasure2");
         opt("treasure2.skipFixer", "true", "Treasure2: don't run its already-current (1.12) structure templates through the data fixer on every world load. "
             + "Measured: most of a new world's 13-minute setup in the big pack.");
+        section("capsule");
+        opt("capsule.skipFixer", "true", "Capsule: don't run its already-current (1.12) reward structures through the data fixer when loot "
+            + "chests pick one. Measured: 38% of the server thread while new chunks fill their chests.");
         section("railcraft");
         opt("railcraft.worldGenCache", "true", "Railcraft ore generation: remember the per-ore 'is generation enabled' answer instead of "
             + "running a regex for every block it checks.");
@@ -274,6 +277,7 @@ public final class ZoomiesConfig {
             case "MixinTreasureTemplateNoFixer": return on("treasure2.skipFixer");
             case "MixinStitcherTileCap": return true;   // textures.maxTileSize read live (0 = off)
             case "MixinRailcraftWorldGenCache": return on("railcraft.worldGenCache");
+            case "MixinCapsuleTemplateNoFixer": return on("capsule.skipFixer");
             case "MixinItemPhysicListCache": return on("droppedItems.itemPhysicListCache");
             case "MixinDynLightsItemThrottle": return on("droppedItems.dynLightThrottle");
             case "MixinBetterWeatherRainHeight": return on("weather.rainHeightMemo");

@@ -17,7 +17,8 @@
     "MixinAbyssalPatrons",
     "MixinThaumcraftRecipeIndex",
     "MixinItemPhysicListCache",
-    "MixinBetterWeatherRainHeight"
+    "MixinBetterWeatherRainHeight",
+    "MixinCapsuleTemplateNoFixer"
   ],
   "client": [
     "MixinNpcsDeferTextureScan",
