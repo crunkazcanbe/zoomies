@@ -5,6 +5,16 @@
   "compatibilityLevel": "JAVA_8",
   "plugin": "com.dogpound.zoomies.ZoomiesPlugin",
   "mixins": [
-    "MixinEnderIOAlloyDedupe"
+    "MixinEnderIOAlloyDedupe",
+    "MixinEnderIOLookupNode",
+    "MixinBwmListContains",
+    "MixinAnimaniaAdvancementsOnce",
+    "MixinMtsPackResourceCache",
+    "MixinFvtmZipIndex",
+    "MixinAbyssalPatrons"
+  ],
+  "client": [
+    "MixinNpcsDeferTextureScan",
+    "MixinGvcObjLines"
   ]
 }

@@ -21,6 +21,7 @@ public class Zoomies implements IFMLLoadingPlugin, IEarlyMixinLoader {
 
     @Override public void injectData(Map<String, Object> data) {
         try { MixinBootstrap.init(); Mixins.addConfiguration(CONFIG); } catch (Throwable ignored) { }
+        try { ZoomiesConfig.load(); WebCache.applyDefaultTimeouts(); } catch (Throwable ignored) { }
     }
 
     @Override public List<String> getMixinConfigs() { return Arrays.asList(CONFIG); }

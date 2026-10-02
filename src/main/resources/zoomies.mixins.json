@@ -5,6 +5,23 @@
   "compatibilityLevel": "JAVA_8",
   "plugin": "com.dogpound.zoomies.ZoomiesPlugin",
   "mixins": [
-    "MixinOreIngredient"
+    "MixinOreIngredient",
+    "MixinProgressManager",
+    "MixinAutosaveInterval",
+    "MixinLazyDimensionsServer"
+  ],
+  "client": [
+    "MixinFastStitcher",
+    "MixinSmoothSyncLoading",
+    "MixinTesrProfile",
+    "MixinEntityRenderProfile",
+    "MixinParticleLod",
+    "MixinRandomMobs",
+    "MixinCustomSky",
+    "MixinLazyDimensionsClient",
+    "MixinNoopTransforms",
+    "MixinDiscoveryGl",
+    "MixinDiscoveryState",
+    "MixinDiscoveryBuffer"
   ]
 }
