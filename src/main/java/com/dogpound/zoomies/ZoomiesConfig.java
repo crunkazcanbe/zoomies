@@ -118,6 +118,9 @@ public final class ZoomiesConfig {
         section("treasure2");
         opt("treasure2.skipFixer", "true", "Treasure2: don't run its already-current (1.12) structure templates through the data fixer on every world load. "
             + "Measured: most of a new world's 13-minute setup in the big pack.");
+        section("railcraft");
+        opt("railcraft.worldGenCache", "true", "Railcraft ore generation: remember the per-ore 'is generation enabled' answer instead of "
+            + "running a regex for every block it checks.");
         section("tails");
         opt("tails.zipIndex", "true", "Tails Legacy: find its part files through a per-jar folder index instead of walking every file of "
             + "every mod jar on each resource reload. Measured: 23 s of the big pack's load.");
@@ -258,6 +261,7 @@ public final class ZoomiesConfig {
             case "MixinXu2OreRegister": return on("extrautils2.oreRegisterIndex");
             case "MixinTailsZipListing": return on("tails.zipIndex");
             case "MixinTreasureTemplateNoFixer": return on("treasure2.skipFixer");
+            case "MixinRailcraftWorldGenCache": return on("railcraft.worldGenCache");
             case "MixinMtsSkipReload": case "MixinUcwSkipReload": return on("reloads.packOnly");
             case "MixinEnderIOLookupNode": return on("enderio.lookupSets");
             case "MixinSmoothSyncLoading": return on("loadingScreen.noFrameLimit");

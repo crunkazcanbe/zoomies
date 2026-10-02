@@ -36,6 +36,7 @@ dependencies {
     compileOnly files('libs/ucw.jar')
     compileOnly files('libs/treasure2.jar')
     compileOnly files('libs/gottschcore.jar')
+    compileOnly files('libs/railcraft.jar')
     compileOnly files('libs/thaumcraft.jar')
     compileOnly files('libs/fvtm.jar')
     compileOnly files('libs/fcl.jar')
