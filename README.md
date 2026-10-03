@@ -59,6 +59,7 @@ Each entry says what it speeds up, how, the config key that controls it and its 
 | 27 | **Tiny far-away mobs.** | Doesn't draw a mob that would be smaller than `entities.minPixels` on screen. Never skips players, named or glowing mobs, bosses, or whatever you're riding. | `entities.screenSizeCull` (true), `entities.minPixels` (3) | n/a |
 | 28 | **Tiny far-away machines** (animated blocks / TESRs). | Same screen-size check for machine renderers. Never within 16 blocks, and never for renderers with an infinite render box such as beacon beams. | `machines.screenSizeCull` (true) | n/a |
 | 29 | **No-op graphics calls.** Old renderers call `translate(0,0,0)`, `rotate(0)` and `scale(1,1,1)` thousands of times a frame. Each call goes to the graphics driver but changes nothing. | Skips exactly those calls. Anything that really moves, turns or scales still goes through. Switches live. | `graphics.skipNoopTransforms` (true) | n/a |
+| — | **BuildCraft facades tab cap.** BuildCraft lists a facade for every block (82,637 in the Pride pack); opening the tab froze the game and EMI indexed them all. The tab shows only the first `creative.bcFacadeLimit` (default 64; -1 = all) — every facade is still craftable. | `creative.bcFacadeLimit` = 64 |
 
 ### Server TPS
 
