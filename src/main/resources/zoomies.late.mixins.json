@@ -18,7 +18,8 @@
     "MixinThaumcraftRecipeIndex",
     "MixinItemPhysicListCache",
     "MixinBetterWeatherRainHeight",
-    "MixinCapsuleTemplateNoFixer"
+    "MixinCapsuleTemplateNoFixer",
+    "MixinBcFacadeTabCap"
   ],
   "client": [
     "MixinNpcsDeferTextureScan",

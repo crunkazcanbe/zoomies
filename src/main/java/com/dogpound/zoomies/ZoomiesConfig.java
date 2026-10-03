@@ -135,6 +135,9 @@ public final class ZoomiesConfig {
         section("weather");
         opt("weather.rainHeightMemo", "true", "Better Weather: remember each block column's rain height for 0.5 s instead of scanning the column "
             + "for every entity, rain sound and rain drop every tick. Measured: ~7% of the render thread.");
+        section("creative");
+        opt("creative.bcFacadeLimit", "64", "BuildCraft puts a facade for EVERY block in its creative tab (82,637 in the Pride pack) — opening it froze the "
+            + "game and EMI indexed them all. Show only this many there (they're all still craftable). -1 = show all.");
         section("tails");
         opt("tails.zipIndex", "true", "Tails Legacy: find its part files through a per-jar folder index instead of walking every file of "
             + "every mod jar on each resource reload. Measured: 23 s of the big pack's load.");
@@ -278,6 +281,7 @@ public final class ZoomiesConfig {
             case "MixinStitcherTileCap": return true;   // textures.maxTileSize read live (0 = off)
             case "MixinRailcraftWorldGenCache": return on("railcraft.worldGenCache");
             case "MixinCapsuleTemplateNoFixer": return on("capsule.skipFixer");
+            case "MixinBcFacadeTabCap": return true;
             case "MixinItemPhysicListCache": return on("droppedItems.itemPhysicListCache");
             case "MixinDynLightsItemThrottle": return on("droppedItems.dynLightThrottle");
             case "MixinBetterWeatherRainHeight": return on("weather.rainHeightMemo");
