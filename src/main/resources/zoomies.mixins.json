@@ -8,7 +8,16 @@
     "MixinOreIngredient",
     "MixinProgressManager",
     "MixinAutosaveInterval",
-    "MixinLazyDimensionsServer"
+    "MixinRunawayEntity",
+    "MixinLazyDimensionsServer",
+    "MixinProfileModSteps",
+    "MixinProfileWorldGen",
+    "MixinProfileTerrain",
+    "MixinProfilePopulate",
+    "MixinProfileSpawnPrep",
+    "MixinForgeRegistryNoDump",
+    "MixinIntCacheThreadLocal",
+    "MixinWorldThreadBiomes"
   ],
   "client": [
     "MixinFastStitcher",
@@ -24,6 +33,7 @@
     "MixinNoopTransforms",
     "MixinDiscoveryGl",
     "MixinDiscoveryState",
-    "MixinDiscoveryBuffer"
+    "MixinDiscoveryBuffer",
+    "MixinProfileReload"
   ]
 }

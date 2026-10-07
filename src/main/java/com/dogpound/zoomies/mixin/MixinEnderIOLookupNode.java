@@ -21,7 +21,10 @@ import org.spongepowered.asm.mixin.injection.Redirect;
  */
 @Mixin(targets = {"crazypants.enderio.base.recipe.lookup.ItemRecipeNode", "crazypants.enderio.base.recipe.lookup.IntRecipeNode"}, remap = false)
 public abstract class MixinEnderIOLookupNode {
-    @Unique private static final Map<NNList<?>, Set<Object>> zoomies$sets = Collections.synchronizedMap(new IdentityHashMap<>());
+    // weak + identity keys: a list Ender IO drops frees its set too (10-07: holding them all = several GB with ~800 mods)
+    @Unique private static final Map<NNList<?>, Set<Object>> zoomies$sets = new com.google.common.collect.MapMaker().weakKeys().concurrencyLevel(4).makeMap();
+    /** short lists are walked as fast as a set lookup; only long ones get a set (most of Ender IO's lists are tiny) */
+    @Unique private static final int ZOOMIES$MIN = 64;
     @Unique private static final Map<Class<?>, Boolean> zoomies$identity = new java.util.concurrent.ConcurrentHashMap<>();
 
     @Unique
@@ -44,7 +47,7 @@ public abstract class MixinEnderIOLookupNode {
 
     @Redirect(method = "makeNext", at = @At(value = "INVOKE", target = "Lcom/enderio/core/common/util/NNList;contains(Ljava/lang/Object;)Z"), remap = false)
     private boolean zoomies$contains(NNList<?> list, Object recipe) {
-        if (!zoomies$usesIdentity(recipe)) return list.contains(recipe); // its own equals: the original walk
+        if (list.size() < ZOOMIES$MIN || !zoomies$usesIdentity(recipe)) return list.contains(recipe); // short list or own equals: the original walk
         return zoomies$set(list).contains(recipe);
     }
 
@@ -52,7 +55,7 @@ public abstract class MixinEnderIOLookupNode {
     @Redirect(method = "makeNext", at = @At(value = "INVOKE", target = "Lcom/enderio/core/common/util/NNList;add(Ljava/lang/Object;)Z"), remap = false)
     private boolean zoomies$add(NNList<?> list, Object recipe) {
         boolean r = ((NNList<Object>) list).add(recipe);
-        Set<Object> set = zoomies$sets.get(list);
+        Set<Object> set = list.size() > ZOOMIES$MIN ? zoomies$sets.get(list) : null;
         if (set != null && set.size() + 1 == list.size()) set.add(recipe); // keep in step; otherwise rebuilt on next look
         return r;
     }

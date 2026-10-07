@@ -9,7 +9,7 @@ buildscript {
 }
 apply plugin: 'net.minecraftforge.gradle'
 
-version = '0.2.0'
+version = '0.3.0'
 group = 'com.dogpound.zoomies'
 archivesBaseName = 'Zoomies-1.12.2'
 sourceCompatibility = targetCompatibility = compileJava.sourceCompatibility = compileJava.targetCompatibility = '1.8'
@@ -25,6 +25,8 @@ dependencies {
     compileOnly files('libs/mixinbooter-api.jar')
     compileOnly files('libs/sponge-mixin.jar')
     compileOnly files('libs/endercore.jar')
+    compileOnly files('libs/ir.jar')
+    compileOnly files('libs/goa.jar')
     compileOnly files('libs/enderio.jar')
     compileOnly files('libs/renderlib.jar')
     compileOnly files('libs/cnpc.jar')
@@ -47,6 +49,7 @@ dependencies {
     compileOnly files('libs/fcl.jar')
     compileOnly files('libs/gvclib.jar')
     compileOnly files('libs/abyssalcraft.jar')
+    compileOnly files('libs/vintagefix.jar')
 }
 
 jar {

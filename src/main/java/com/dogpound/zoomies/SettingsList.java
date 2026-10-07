@@ -9,6 +9,8 @@ final class SettingsList {
         {"enderio.lookupSets", "Ender IO recipe lookup", "b", "", "", "", "Loading tricks", "1"},
         {"textures.fastStitch", "Fast texture stitching", "b", "", "", "", "Loading tricks", "1"},
         {"loadingScreen.noFrameLimit", "Loading screen doesn't wait", "b", "", "", "", "Loading tricks", "1"},
+        {"bootCaches.mtsModelCompat", "Immersive Vehicles model cache", "b", "", "", "", "Loading tricks", "1"},
+        {"bootCaches.vintageFixTextureList", "VintageFix texture list cache", "b", "", "", "", "Loading tricks", "1"},
         {"customnpcs.deferTextureScan", "Custom NPCs scan in background", "b", "", "", "", "Loading tricks", "1"},
         {"betterwithmods.oreIndex", "Better With Mods ore index", "b", "", "", "", "Loading tricks", "1"},
         {"eta.enabled", "Loading time estimate", "b", "", "", "", "Loading tricks", "1"},

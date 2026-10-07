@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * Her ask 2026-09-28: "make the dimensions only load when you go to them". A world start loads every registered
+ * Requested: "make the dimensions only load when you go to them". A world start loads every registered
  * dimension (122 in this pack); Forge can already load one the first time anything needs it (travel, a mod asking
  * for it), and unloads idle ones anyway. So start with only the ones in the list.
  */

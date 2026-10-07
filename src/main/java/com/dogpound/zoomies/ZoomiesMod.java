@@ -27,16 +27,30 @@ public class ZoomiesMod {
         if (FMLCommonHandler.instance().getSide().isClient()) MinecraftForge.EVENT_BUS.register(BetterGrass.class);
     }
 
+    /** after every mod's server-start code: slow value-mapping jobs run in the background (BackgroundJobs) */
+    /** Warm Classes summary: how many classes came from the cache and roughly what that saved */
+    @Mod.EventHandler
+    public void loadComplete(net.minecraftforge.fml.common.event.FMLLoadCompleteEvent e) { WarmClasses.report(); BootCaches.report(); if (FMLCommonHandler.instance().getSide().isClient()) AutoTune.run(); }
+
+    @Mod.EventHandler
+    public void serverStarted(net.minecraftforge.fml.common.event.FMLServerStartedEvent e) { BackgroundJobs.serverStarted(); JsgLazyGates.started = true; }
+
+    @Mod.EventHandler
+    public void serverStopped(net.minecraftforge.fml.common.event.FMLServerStoppedEvent e) { JsgLazyGates.started = false; }
+
     @Mod.EventHandler
     public void init(FMLInitializationEvent e) {
         JavaCache.register(FMLCommonHandler.instance().getSide().isClient());
+        MinecraftForge.EVENT_BUS.register(new VillageSpawn());
+        if (net.minecraftforge.fml.common.Loader.isModLoaded("jsg")) MinecraftForge.EVENT_BUS.register(new JsgLazyGates());                 // new worlds start in a village
         if (FMLCommonHandler.instance().getSide().isClient()) {
             ClientCommandHandler.instance.registerCommand(new Command());
+            if (ZoomiesConfig.on("profiler.enabled")) MinecraftForge.EVENT_BUS.register(new ProfilerHooks());
             MinecraftForge.EVENT_BUS.register(new Frames());
             Graphics.register();
             Details.register();
             Discovery.register();
-            // her ask: settings inside Celeritas's video menu if it's there, otherwise a button in Video Settings
+            // Requested: settings inside Celeritas's video menu if it's there, otherwise a button in Video Settings
             if (net.minecraftforge.fml.common.Loader.isModLoaded("celeritas")) {
                 try { CeleritasPage.register(); } catch (Throwable t) { System.out.println("[Zoomies] couldn't add the Celeritas page: " + t); MinecraftForge.EVENT_BUS.register(new VideoButton()); }
             } else MinecraftForge.EVENT_BUS.register(new VideoButton());
@@ -68,7 +82,7 @@ public class ZoomiesMod {
 
     static final class Command extends CommandBase {
         @Override public String getName() { return "zoomies"; }
-        @Override public String getUsage(ICommandSender s) { return "/zoomies discover [seconds] | profile | report | stop"; }
+        @Override public String getUsage(ICommandSender s) { return "/zoomies discover [seconds] | profile | profiler [startup|steps|world] | report | stop | village"; }
         @Override public int getRequiredPermissionLevel() { return 0; }
         @Override public boolean checkPermission(MinecraftServer server, ICommandSender sender) { return true; }
 
@@ -80,6 +94,22 @@ public class ZoomiesMod {
                 try { if (a.length > 1) secs = Math.max(5, Math.min(300, Integer.parseInt(a[1]))); } catch (NumberFormatException ignored) {}
                 Discovery.start(secs);
                 sender.sendMessage(new TextComponentString("§d✦ Optimization Discovery: watching the game for " + secs + " s. Play normally — look around, walk past your machines. The report opens by itself."));
+                return;
+            }
+            if (sub.equals("village")) {
+                Minecraft mc = Minecraft.getMinecraft();
+                MinecraftServer srv = mc.getIntegratedServer();
+                if (srv == null || mc.player == null) { sender.sendMessage(new TextComponentString("\u00A7cThis works in single player (or ask the server owner).")); return; }
+                java.util.UUID id = mc.player.getUniqueID();
+                srv.addScheduledTask(() -> {
+                    net.minecraft.entity.player.EntityPlayerMP p = srv.getPlayerList().getPlayerByUUID(id);
+                    if (p != null) VillageSpawn.command(p, true);
+                });
+                return;
+            }
+            if (sub.equals("profiler")) {
+                int tab = a.length > 1 && a[1].startsWith("w") ? 2 : a.length > 1 && a[1].startsWith("s") && a[1].contains("ep") ? 1 : 0;
+                Minecraft.getMinecraft().addScheduledTask(() -> Minecraft.getMinecraft().displayGuiScreen(new GuiProfiler(Minecraft.getMinecraft().currentScreen, tab)));
                 return;
             }
             if (sub.equals("profile")) {
@@ -94,7 +124,7 @@ public class ZoomiesMod {
         }
 
         @Override public List<String> getTabCompletions(MinecraftServer s, ICommandSender c, String[] a, net.minecraft.util.math.BlockPos p) {
-            return a.length == 1 ? getListOfStringsMatchingLastWord(a, Arrays.asList("discover", "profile", "report", "stop")) : java.util.Collections.emptyList();
+            return a.length == 1 ? getListOfStringsMatchingLastWord(a, Arrays.asList("discover", "profile", "profiler", "report", "stop", "village")) : java.util.Collections.emptyList();
         }
     }
 

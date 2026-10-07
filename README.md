@@ -6,7 +6,9 @@ Load-speed and frame-rate tricks for big Minecraft 1.12.2 modpacks. Same results
 
 Zoomies is a performance mod for Minecraft 1.12.2 (Cleanroom or Forge). Big modpacks spend minutes repeating the same slow work: walking long lists, unzipping every mod jar, rebuilding things that never change. Zoomies finds those spots by measuring real launches and gives the same answer by a faster route. Most tricks target one specific mod and do nothing if that mod isn't installed.
 
-It was built for the Pride modpack, a 1.12.2 pack of about 750 mods, and the numbers below were measured there. It works in any 1.12.2 pack, big or small.
+It was built for the Pride modpack, a 1.12.2 pack of about **800 mods**, and the numbers below were measured there. With Zoomies that pack reaches the main menu in **about 12-13 minutes** on a desktop test machine (cold starts and other hardware will differ). It works in any 1.12.2 pack, big or small.
+
+New in 0.3.0: the **Pride Profiler** (find out which mods slow your pack down), **instant world join**, **start in a village**, a much faster **Distant Horizons** far terrain, **Auto-Tune** for your hardware, and a long list of world-join and world-creation savings. See the [changelog](CHANGELOG.md).
 
 Every trick has its own switch in `config/zoomies.cfg`. A trick that is switched off is never patched into the game at all. The few tricks that change results (for example, fewer far-away particles) are visual only and never touch the world.
 
@@ -48,6 +50,33 @@ Each entry says what it speeds up, how, the config key that controls it and its 
 | 21 | **Railcraft ore generation.** Railcraft asks "is generation enabled for this ore?" for every block it considers replacing, and each call runs a regex. | Remembers the answer per ore name. It never changes after the config loads. | `railcraft.worldGenCache` (true) | n/a (showed up in the fresh-world server profile) |
 | 22 | **Stale startup caches.** Some mods save a slow startup calculation to disk (ProjectE's EMC values, RealmCoin prices). The risk is a stale file after the mod list changes. | Fingerprints the mod list (mod id, version and jar size). When it changes, Zoomies deletes those saved files so they are rebuilt once. Otherwise they are reused. | `caches.invalidateOnModChange` (true) | ProjectE EMC cache: ~40 s of every world start |
 
+### World joins & new worlds (new in 0.3.0)
+
+| # | Speeds up | How | Config key (default) | Measured |
+|---|---|---|---|---|
+| 37 | **"Preparing spawn area".** | Skips the wait: you are in the world as soon as it opens; the land around you loads like any other chunks (the Ksyxis idea, compatible with big modded loaders). | `worldgen.instantJoin` (true) | most of the spawn wait |
+| 38 | **ProjectE EMC mapping on join.** | Runs in the background after the world opens; values reach players when done. | `speed.projecteBackground` (true) | 39 s after a mod change |
+| 39 | **Ender IO alloy re-filing on join.** | Done in the background; smelters may idle a few seconds after you join. | `join.enderioAlloyBackground` (true) | ~9.5 s |
+| 40 | **Forge registry trace dump.** ~185,000 log lines on every join. | Skipped. | `join.skipRegistryDump` (true) | ~3 s |
+| 41 | **Lootr block cache.** Lootr builds a tile entity of every block on the first loot tick. | Remembers which blocks qualified until the mod list changes. | `join.lootrBlockCache` (true) | ~11 s server freeze |
+| 42 | **Structurize double read, CD4017BE forced GC, Realistic Physics tag walk, Compact Machines dimension load at login.** | Each skipped or answered directly, same results. | `join.structurizeSingleRead`, `join.cd4017NoGc`, `join.realisticPhysicsTags`, `join.compactMachinesNoDimLoad` (all true) | ~1.3-1.7 s each |
+| 43 | **Just Stargate dimension scan.** Loads all ~160 dimensions at world start to give each a gate address. | Only already-loaded dimensions at start; the rest when you first go there. | `speed.jsgLazyDimensions` (true) | ~3 min of every new world |
+| 44 | **Advent of Ascension game rules.** Loads every dimension just to add two rules. | Loaded worlds only (the others share the overworld's rules). | `speed.aoaLazyGameRules` (true) | ~30 s |
+| 45 | **Capsule reward templates.** | Remembers templates that don't load and caches every template per id (Capsule's own cache never hit). | (part of `capsule.skipFixer`) | seen in 8/8 and 10/10 server samples |
+| 46 | **Villager Backport village check** on every new chunk (OTG worlds ran at ~1 TPS). | Decides from the villages already planned instead of searching the map. | `fix.villagerBackportFastVillageCheck` (true) | ~1 TPS → normal |
+| 47 | **Immersive Railroading forced GCs** while loading train models (~80 per launch). | Only when memory is really low. | `immersiverailroading.noForcedGc` (true) | ~40 s per launch |
+| 48 | **Immersive Vehicles model compatibility scan** and **VintageFix texture search** at startup. | Results saved in `zoomies-cache/boot/`, reused until a mod jar changes. | `bootCaches.mtsModelCompat`, `bootCaches.vintageFixTextureList` (true) | ~15 s and ~12 s |
+| 49 | **Ender IO Alloy Smelter lookup memory.** Synthetic 2x/3x recipes made the pair/triple lookup tree cubic (gigabytes of heap with ~800 mods). | Files each recipe once per ingredient; same matches. Lookup sets use weak identity keys and only cover big lists. | `enderio.flatAlloyLookup` (true) | heap no longer runs out |
+
+### Distant Horizons (new in 0.3.0)
+
+| # | Speeds up | How | Config key (default) |
+|---|---|---|---|
+| 50 | **Far land you never visited.** DH fully generates each chunk plus 8 neighbours. | Terrain-only LODs (no trees/structures until you go near). | `dh.surfaceLods` (true), `dh.fullDetailRadius` (0) |
+| 51 | **LOD building on the busy server thread.** | Built on DH's own worker threads, each with a private biome + terrain generator (vanilla-style overworlds and OTG); loaded chunks are handed over as they are, saved ones read from the region file. Dozens of times faster. | `dh.offThreadLods` (true) |
+| 52 | **DH starving the server tick.** | A fixed time slice per tick, a bigger one while everyone is idle. | `dh.serverBudgetMs` (20), `dh.idleSeconds` (30), `dh.idleBudgetMs` (120) |
+| 53 | **DH competing with your own chunks.** | Pauses while any player has chunks waiting or moves fast. | `dh.playerFirst` (true), `dh.playerFirstSpeed` (8), `dh.playerFirstHoldMs` (2000) |
+
 ### In-game FPS (client)
 
 | # | Speeds up | How | Config key (default) | Measured |
@@ -79,8 +108,14 @@ ItemPhysic (#23) and Better Weather (#25) also save server time, because both ru
 | 34 | **Optimization Discovery Mode.** `/zoomies discover [seconds]` (5–300, default 30) watches the game with low-cost counters, then opens a report. The report shows which Zoomies tricks would help the current scene and has a switch for each. | n/a (counters are idle until you run it) |
 | 35 | **Render cost report.** `/zoomies profile` times every machine and entity renderer. `/zoomies report` lists them worst first, with the owning mod, ms per frame, % of frame, calls per frame and µs per call. `/zoomies stop` ends profiling. | n/a |
 | 36 | **Safety check mode.** Runs the original code for 1 in every `safety.verifyEvery` answers and logs any difference as `[Zoomies] MISMATCH`. Covers the ore-dictionary index, the Ender IO alloy fix and the Better With Mods index. You can also turn it on by creating an empty file named `zoomies-verify` in the game folder. | `safety.verify` (false), `safety.verifyEvery` (64) |
+| 54 | **Pride Profiler.** Times every mod during loading and world creation and shows a report on the main menu (buttons in Esc and Options). | `profiler.enabled` (true), `profiler.popup` (true) |
+| 55 | **Start in a village.** New worlds spawn at the nearest village; `/zoomies village` moves you to one. | `worldgen.spawnInVillage` (true) |
+| 56 | **Auto-Tune.** Detects CPU threads, RAM and GPU vendor/VRAM and sets Celeritas and Distant Horizons threads per hardware tier; never overrides a value you changed. | state in `config/zoomies-autotune.json` |
+| 57 | **Runaway entity guard.** Stops any non-player entity told to move absurdly far in one tick. | `entities.runawayGuard` (true), `entities.runawayMaxBlocksPerTick` (10000) |
+| 58 | **Warm Classes (experimental, off).** Saves classes as the coremods left them and reuses them next launch; Mixin always runs live on top. Test with `warmClasses.verify` first. | `warmClasses.enabled` (**false**) and `warmClasses.*` |
+| 59 | **Gates of the Apocalypse spawn.** Keeps its fortress but not the world spawn on its roof. | `worldgen.fortressKeepsSpawn` (true) |
 
-**Total: 31 speed tricks (#1–31), plus 5 other features.**
+**Total: 53 speed tricks, plus 11 other features.**
 
 ## Video options
 
@@ -143,8 +178,9 @@ MIT License, © 2026 crunkazcanbe.
 
 ## Credits
 
-Made by crunkazcanbe, with Claude.
+Made by crunkazcanbe.
 
+Made with [Claude Code](https://claude.com/claude-code) and [Blockbench](https://www.blockbench.net).
 
 ## Compile-only jars
 
@@ -153,6 +189,7 @@ The build compiles against these jars in `libs/` (other authors' mods / APIs). T
 - `abyssalcraft.jar`
 - `animania.jar`
 - `betterweather.jar`
+- `buildcraft.jar`
 - `bwm.jar`
 - `capsule.jar`
 - `celeritas.jar`
@@ -163,8 +200,10 @@ The build compiles against these jars in `libs/` (other authors' mods / APIs). T
 - `enderio.jar`
 - `fcl.jar`
 - `fvtm.jar`
+- `goa.jar`
 - `gottschcore.jar`
 - `gvclib.jar`
+- `ir.jar`
 - `mixinbooter-api.jar`
 - `mts.jar`
 - `railcraft.jar`
@@ -173,4 +212,5 @@ The build compiles against these jars in `libs/` (other authors' mods / APIs). T
 - `thaumcraft.jar`
 - `treasure2.jar`
 - `ucw.jar`
+- `vintagefix.jar`
 - `xu2.jar`

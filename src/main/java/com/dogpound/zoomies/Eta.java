@@ -66,6 +66,7 @@ public final class Eta {
         for (Object[] o : now) sb.append(o[0]).append('\t').append(o[1]).append('\n');
         sb.append(total).append("\t#END\n");
         try { file().getParentFile().mkdirs(); Files.write(file().toPath(), sb.toString().getBytes(StandardCharsets.UTF_8)); } catch (Exception ignored) { }
+        try { Profiler.startupDone(new java.util.ArrayList<>(now)); } catch (Throwable t) { System.out.println("[Zoomies] profiler: " + t); }
         if (ZoomiesConfig.on("general.logTimings"))
             System.out.println("[Zoomies] loading took " + fmt(total) + (lastTotal > 0 ? " (last time " + fmt(lastTotal) + ")" : ""));
     }
